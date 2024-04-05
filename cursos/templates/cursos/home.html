@@ -49,7 +49,10 @@
             {% for curso in cursos_destacados %}
                 <div class="course-card">
                     <a href="{% url 'curso_detail' curso.id %}">
-                        <img src="{% static curso.imagen %}" alt="{{ curso.nombre }}">
+                        <img width="auto"
+                             height="auto"
+                             src="{% static curso.imagen %}"
+                             alt="{{ curso.nombre }}">
                     </a>
                     <h3>{{ curso.nombre }}</h3>
                     <p>{{ curso.descripcion|truncatechars:100 }}</p>
@@ -58,5 +61,8 @@
                 <p>No hay cursos destacados disponibles.</p>
             {% endfor %}
         </div>
+    </section>
+    <section class="new-course mt-5">
+        <a class="cta-button" href="{% url 'curso_create' %}">Crear Nuevo Curso</a>
     </section>
 {% endblock %}
