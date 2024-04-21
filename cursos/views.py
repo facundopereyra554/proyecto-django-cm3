@@ -38,7 +38,7 @@ def home(request):
 
 
 def curso_list(request):
-    cursos = Curso.objects.select_related("categoria")
+    cursos = Curso.objects.select_related("categoria").filter(estado="publicado")
     cursos_data = []
     for curso in cursos:
         curso_data = {
@@ -58,6 +58,26 @@ def curso_list(request):
     return render(request, "cursos/curso_list.html", context=context)
 
 
+def curso_list_archive(request):
+    cursos = Curso.objects.select_related("categoria").filter(estado="archivado")
+    cursos_data = []
+    for curso in cursos:
+        curso_data = {
+            "id": curso.id,
+            "nombre": curso.nombre,
+            "descripcion": curso.descripcion,
+            "precio": curso.precio,
+            "fecha_publicacion": curso.fecha_publicacion,
+            "categoria": curso.categoria.nombre,
+            "duracion": curso.duracion,
+            "num_estudiantes": curso.estudiantes.count(),
+            "imagen": curso.imagen.url,
+        }
+        cursos_data.append(curso_data)
+    context = {"cursos": cursos_data}
+    return render(request, "cursos/curso_list_archive.html", context=context)
+
+
 def curso_detail(request, curso_id):
     curso = (
         Curso.objects.prefetch_related("estudiantes")
@@ -69,6 +89,7 @@ def curso_detail(request, curso_id):
         "id": curso.id,
         "nombre": curso.nombre,
         "descripcion": curso.descripcion,
+        "contenido" : curso.contenido,
         "precio": curso.precio,
         "fecha_publicacion": curso.fecha_publicacion,
         "categoria": curso.categoria.nombre,
@@ -115,4 +136,18 @@ def update_curso(request, curso_id):
 def delete_curso(request, curso_id):
     curso = Curso.objects.get(id=curso_id)
     curso.delete()
+    return redirect("curso_list")
+
+
+def curso_archive(request, curso_id):
+    curso = Curso.objects.get(id=curso_id)
+    curso.estado = "archivado"
+    curso.save()
+    return redirect("curso_list")
+
+
+def curso_restore(request, curso_id):
+    curso = Curso.objects.get(id=curso_id)
+    curso.estado = "publicado"
+    curso.save()
     return redirect("curso_list")

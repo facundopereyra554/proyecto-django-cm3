@@ -6,6 +6,9 @@ from .views import (
     create_curso,
     update_curso,
     delete_curso,
+    curso_archive,
+    curso_restore,
+    curso_list_archive
 )
 
 
@@ -16,4 +19,7 @@ urlpatterns = [
     path("cursos/crear/", create_curso, name="curso_create"),
     path("cursos/<int:curso_id>/actualizar/", update_curso, name="curso_update"),
     path("cursos/<int:curso_id>/eliminar/", delete_curso, name="curso_delete"),
+    path("cursos/<int:curso_id>/archivar", curso_archive, name="curso_archive"),
+    path("cursos/<int:curso_id>/restaurar", curso_restore, name="curso_restore"),
+    path("cursos/archivados/", curso_list_archive, name="curso_list_archive"),
 ]
